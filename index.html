@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyPlay Media Player</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: linear-gradient(90deg, #2c3e50, #3498db);
+            padding: 2rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: padding 0.3s ease, background 0.3s ease;
+        }
+
+        header.scrolled {
+            padding: 1rem;
+            background: linear-gradient(90deg, #1f2a3c, #2980b9);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeInDown 0.8s ease forwards;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeInDown 0.8s ease 0.2s forwards;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h2 {
+            color: #3498db;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        ul {
+            list-style-type: none;
+            margin-left: 1rem;
+        }
+
+        ul li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        ul li::before {
+            content: '•';
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: #3498db;
+            color: #fff;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+            background: rgba(52, 152, 219, 0.9);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .download-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .download-btn:hover::before {
+            left: 100%;
+        }
+
+        pre {
+            background-color: rgba(44, 44, 44, 0.8);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        code {
+            font-family: 'Courier New', monospace;
+            color: #e0e0e0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(44, 44, 44, 0.8);
+            backdrop-filter: blur(10px);
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .social-links a {
+            color: #3498db;
+            text-decoration: none;
+            margin: 0 0.5rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .social-links a:hover {
+            color: #ffffff;
+            transform: scale(1.1);
+        }
+
+        @keyframes fadeInDown {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .download-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>PyPlay Media Player</h1>
+        <p>A sleek, feature-rich media player built with Python, PyQt5, and libVLC engine.</p>
+        <a href="https://github.com/AmiNilay/PyPlay/releases/download/v1.0.0/PyPlay-v1.0-Windows.zip" class="download-btn">Download PyPlay v1.0</a>
+    </header>
+
+    <div class="container">
+        <section>
+            <h2>About PyPlay</h2>
+            <p>PyPlay is a modern media player designed for a smooth playback experience with a sleek, dark user interface. Powered by Python, PyQt5, and the robust libVLC engine, it supports a wide range of audio and video formats.</p>
+        </section>
+
+        <section>
+            <h2>Features</h2>
+            <ul>
+                <li>Smooth playback for a wide variety of video and audio formats.</li>
+                <li>Full playlist support: add individual files or entire folders.</li>
+                <li>Complete playback controls: play/pause, stop, seek, next/previous, loop.</li>
+                <li>Variable playback speed.</li>
+                <li>Volume control, including mute and mouse-wheel adjustment.</li>
+                <li>Native-style fullscreen with auto-hiding controls.</li>
+                <li>Support for external subtitle files.</li>
+                <li>Video snapshots.</li>
+                <li>... and more!</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Installation (for Users)</h2>
+            <p>Follow these steps to run the PyPlay application:</p>
+            <ol>
+                <li><strong>Install VLC:</strong> Before using PyPlay, you must have the official VLC Media Player installed on your system. Download and install VLC for your operating system (e.g., the 64-bit version for 64-bit Windows) from the <a href="https://www.videolan.org/vlc/" target="_blank">official VLC website</a>.</li>
+                <li><strong>Download PyPlay:</strong> Go to the <a href="https://github.com/AmiNilay/PyPlay/releases" target="_blank">Releases Page</a> and download the latest .zip file (e.g., PyPlay-v1.0-Windows.zip).</li>
+                <li><strong>Unzip and Run:</strong> Unzip the downloaded file to a permanent location on your computer. Open the new PyPlay folder and double-click on <code>PyPlay.exe</code> to start the application.</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>For Developers (Running from Source)</h2>
+            <p>If you want to run or contribute to the project from the source code:</p>
+            <ol>
+                <li><strong>Prerequisites:</strong> Ensure you have Python 3.x and the official VLC Media Player installed.</li>
+                <li><strong>Clone the repository:</strong>
+                    <pre><code>git clone https://github.com/AmiNilay/PyPlay.git
+cd PyPlay</code></pre>
+                </li>
+                <li><strong>Set up a virtual environment (recommended):</strong>
+                    <pre><code>python -m venv venv
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+# source venv/bin/activate</code></pre>
+                </li>
+                <li><strong>Install dependencies:</strong>
+                    <pre><code>pip install -r requirements.txt</code></pre>
+                </li>
+                <li><strong>Run the application:</strong>
+                    <pre><code>python main.py</code></pre>
+                </li>
+            </ol>
+        </section>
+    </div>
+
+    <footer>
+        <p>Created by Nilay Naha</p>
+        <p>© 2025 PyPlay. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://aminilay.github.io/nilay-naha-portfolio/" target="_blank">Portfolio</a> |
+            <a href="https://www.linkedin.com/in/nilay-naha/" target="_blank">LinkedIn</a> |
+            <a href="mailto:niloynaha2003@gmail.com">Email</a>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Sticky header shrink effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Intersection Observer for section fade-in
+        const sections = document.querySelectorAll('section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
