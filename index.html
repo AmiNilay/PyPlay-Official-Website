@@ -4,8 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PyPlay Media Player</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* --- CSS Variables (No Blue or Purple ) --- */
+        :root {
+            --bg-dark: #0f0f0f;
+            --bg-surface: #1a1a1a;
+            --bg-surface-light: #252525;
+            --accent-primary: #10b981; /* Emerald Green */
+            --accent-hover: #059669;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: #333333;
+            --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,299 +27,597 @@
         }
 
         body {
-            background-color: #1a1a1a;
-            color: #e0e0e0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             line-height: 1.6;
             overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
-        header {
-            background: linear-gradient(90deg, #2c3e50, #3498db);
-            padding: 2rem;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            transition: padding 0.3s ease, background 0.3s ease;
+        /* --- Animations --- */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        header.scrolled {
-            padding: 1rem;
-            background: linear-gradient(90deg, #1f2a3c, #2980b9);
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            opacity: 0;
-            transform: translateY(-20px);
-            animation: fadeInDown 0.8s ease forwards;
-        }
-
-        header p {
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin: 0 auto;
-            opacity: 0;
-            transform: translateY(-20px);
-            animation: fadeInDown 0.8s ease 0.2s forwards;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        section {
-            margin-bottom: 3rem;
+        .reveal {
             opacity: 0;
             transform: translateY(30px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            transition: var(--transition-smooth);
         }
 
-        section.visible {
+        .reveal.active {
             opacity: 1;
             transform: translateY(0);
         }
 
-        h2 {
-            color: #3498db;
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-            font-weight: 600;
-        }
-
-        ul {
-            list-style-type: none;
-            margin-left: 1rem;
-        }
-
-        ul li {
-            margin-bottom: 0.5rem;
-            position: relative;
-            padding-left: 1.5rem;
-        }
-
-        ul li::before {
-            content: '•';
-            color: #3498db;
-            position: absolute;
-            left: 0;
-            font-size: 1.2rem;
-        }
-
-        .download-btn {
-            display: inline-block;
-            background: #3498db;
-            color: #fff;
-            padding: 1rem 2rem;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            backdrop-filter: blur(10px);
-            background: rgba(52, 152, 219, 0.9);
-        }
-
-        .download-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
-        }
-
-        .download-btn::before {
-            content: '';
-            position: absolute;
+        /* --- Navigation --- */
+        nav {
+            position: fixed;
             top: 0;
-            left: -100%;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.5s;
+            background: rgba(15, 15, 15, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition-smooth);
         }
 
-        .download-btn:hover::before {
-            left: 100%;
-        }
-
-        pre {
-            background-color: rgba(44, 44, 44, 0.8);
-            padding: 1rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        code {
-            font-family: 'Courier New', monospace;
-            color: #e0e0e0;
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            background: rgba(44, 44, 44, 0.8);
-            backdrop-filter: blur(10px);
-            margin-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        footer p {
-            margin-bottom: 0.5rem;
-        }
-
-        .social-links a {
-            color: #3498db;
+        .nav-brand {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
             text-decoration: none;
-            margin: 0 0.5rem;
-            transition: color 0.3s ease, transform 0.3s ease;
-            display: inline-block;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .social-links a:hover {
-            color: #ffffff;
+        .nav-brand span {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition-smooth);
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            padding: 8rem 5% 4rem;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeUp 0.8s ease-out forwards;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #ffffff, var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-ctas {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.8rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: #000;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-surface-light);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+            transform: translateY(-3px);
+        }
+
+        .metadata-badges {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+
+        .badge {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* --- App Mockup --- */
+        .mockup-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg-surface);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            transform: perspective(1000px) rotateX(2deg);
+            transition: var(--transition-smooth);
+        }
+
+        .mockup-container:hover {
+            transform: perspective(1000px) rotateX(0deg) translateY(-10px);
+            box-shadow: 0 30px 60px rgba(16, 185, 129, 0.15);
+        }
+
+        .mockup-header {
+            background: var(--bg-surface-light);
+            padding: 0.8rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .mockup-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot-r { background: #ff5f56; }
+        .dot-y { background: #ffbd2e; }
+        .dot-g { background: #27c93f; }
+
+        .mockup-body {
+            aspect-ratio: 16/9;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .mockup-play {
+            font-size: 4rem;
+            color: rgba(255,255,255,0.2);
+            transition: var(--transition-smooth);
+        }
+        .mockup-container:hover .mockup-play {
+            color: var(--accent-primary);
             transform: scale(1.1);
         }
 
-        @keyframes fadeInDown {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .mockup-controls {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 1.2rem;
         }
 
-        @media (max-width: 600px) {
-            header h1 {
-                font-size: 2rem;
-            }
+        /* --- Main Content Container --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 5%;
+        }
 
-            header p {
-                font-size: 1rem;
-            }
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            color: var(--text-main);
+        }
+        .section-title span {
+            color: var(--accent-primary);
+        }
 
-            .container {
-                padding: 1rem;
-            }
+        /* --- Features Grid --- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
 
-            .download-btn {
-                padding: 0.8rem 1.5rem;
-                font-size: 1rem;
-            }
+        .feature-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            border-radius: 12px;
+            transition: var(--transition-smooth);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-primary);
+            background: var(--bg-surface-light);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- Terminal / Installation --- */
+        .terminal-window {
+            background: #0d0d0d;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .terminal-header {
+            background: var(--bg-surface-light);
+            padding: 0.8rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .terminal-title {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-family: monospace;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: var(--transition-smooth);
+        }
+
+        .copy-btn:hover {
+            background: var(--bg-surface);
+            color: var(--text-main);
+        }
+
+        .terminal-body {
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .terminal-body code {
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            white-space: pre;
+            display: block;
+            line-height: 1.5;
+        }
+
+        .comment { color: #6b7280; }
+        .command { color: var(--accent-primary); }
+
+        /* --- Supported Formats --- */
+        .formats-strip {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding: 3rem 5%;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-surface);
+        }
+
+        .format-tag {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 3rem 5%;
+            background: var(--bg-dark);
+            border-top: 1px solid var(--border-color);
+        }
+
+        footer p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin: 0 0.8rem;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .nav-links { display: none; } /* Simplified for mobile */
         }
     </style>
 </head>
 <body>
-    <header>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#" class="nav-brand">🎬 PyPlay <span>by Nilay Naha</span></a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#install">Installation</a>
+            <a href="https://github.com/AmiNilay/PyPlay" target="_blank">GitHub ⭐</a>
+            <a href="https://aminilay.github.io/nilay-naha-portfolio/" target="_blank">← Portfolio</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
         <h1>PyPlay Media Player</h1>
-        <p>A sleek, feature-rich media player built with Python, PyQt5, and libVLC engine.</p>
-        <a href="https://github.com/AmiNilay/PyPlay/releases/download/v1.0.0/PyPlay-v1.0-Windows.zip" class="download-btn">Download PyPlay v1.0</a>
+        <p>A sleek, feature-rich desktop media player built with Python & libVLC.</p>
+        
+        <div class="hero-ctas">
+            <a href="https://github.com/AmiNilay/PyPlay/releases/download/v1.0.0/PyPlay-v1.0-Windows.zip" class="btn btn-primary">
+                ⬇ Download PyPlay v1.0
+            </a>
+            <a href="https://github.com/AmiNilay/PyPlay" target="_blank" class="btn btn-secondary">
+                🐙 View on GitHub ⭐
+            </a>
+        </div>
+
+        <div class="metadata-badges">
+            <span class="badge">🪟 Windows 64-bit (.zip )</span>
+            <span class="badge">📦 v1.0 (Latest)</span>
+            <span class="badge">🛡️ 100% Free & Open Source</span>
+        </div>
+
+        <!-- App Mockup -->
+        <div class="mockup-container reveal">
+            <div class="mockup-header">
+                <div class="mockup-dot dot-r"></div>
+                <div class="mockup-dot dot-y"></div>
+                <div class="mockup-dot dot-g"></div>
+            </div>
+            <div class="mockup-body">
+                <div class="mockup-play">▶</div>
+                <div class="mockup-controls">
+                    <span>▶ ⏸ ⏹</span>
+                    <span>01:24 / 04:50</span>
+                    <span>🔊 80% &nbsp; 💬 &nbsp; 📸 &nbsp; ⛶</span>
+                </div>
+            </div>
+        </div>
     </header>
 
+    <!-- Main Content -->
     <div class="container">
-        <section>
-            <h2>About PyPlay</h2>
-            <p>PyPlay is a modern media player designed for a smooth playback experience with a sleek, dark user interface. Powered by Python, PyQt5, and the robust libVLC engine, it supports a wide range of audio and video formats.</p>
+        
+        <!-- Features Section -->
+        <section id="features" class="reveal">
+            <h2 class="section-title">Key <span>Features</span></h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎬</div>
+                    <h3>Wide Format Support</h3>
+                    <p>Plays MP4, MKV, AVI, MP3, FLAC, AAC powered by the robust libVLC engine.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📑</div>
+                    <h3>Smart Playlists</h3>
+                    <p>Load single files or queue entire folders effortlessly with drag-and-drop support.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Precision Playback</h3>
+                    <p>Variable playback speed (0.5x to 2.0x) with seamless frame seeking.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔊</div>
+                    <h3>Smart Controls</h3>
+                    <p>Mouse-wheel volume control, quick mute toggles, and intuitive keyboard hotkeys.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔲</div>
+                    <h3>Immersive Fullscreen</h3>
+                    <p>Native fullscreen mode with intelligent auto-hiding playback controls.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Subtitle Support</h3>
+                    <p>Automatic loading and manual synchronization for external `.srt` and `.vtt` files.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📸</div>
+                    <h3>Instant Snapshots</h3>
+                    <p>One-click high-resolution frame capture saved directly to your local disk.</p>
+                </div>
+            </div>
         </section>
 
-        <section>
-            <h2>Features</h2>
-            <ul>
-                <li>Smooth playback for a wide variety of video and audio formats.</li>
-                <li>Full playlist support: add individual files or entire folders.</li>
-                <li>Complete playback controls: play/pause, stop, seek, next/previous, loop.</li>
-                <li>Variable playback speed.</li>
-                <li>Volume control, including mute and mouse-wheel adjustment.</li>
-                <li>Native-style fullscreen with auto-hiding controls.</li>
-                <li>Support for external subtitle files.</li>
-                <li>Video snapshots.</li>
-                <li>... and more!</li>
-            </ul>
+        <!-- Installation Section -->
+        <section id="install" class="reveal" style="margin-top: 6rem;">
+            <h2 class="section-title">Installation <span>Guide</span></h2>
+            
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">
+                For standard users, simply download the <strong>.zip</strong> from the hero section, extract, and run <code>PyPlay.exe</code> (Requires VLC installed).  
+
+                For developers, run from source using the steps below:
+            </p>
+
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <span class="terminal-title">bash - Developer Setup</span>
+                    <button class="copy-btn" onclick="copyCode()">📋 Copy</button>
+                </div>
+                <div class="terminal-body">
+<code id="code-block"><span class="comment"># 1. Clone & enter directory</span>
+<span class="command">git clone</span> https://github.com/AmiNilay/PyPlay.git && <span class="command">cd</span> PyPlay
+
+<span class="comment"># 2. Activate virtual environment</span>
+<span class="command">python</span> -m venv venv && <span class="command">source</span> venv/bin/activate  <span class="comment"># Windows: venv\Scripts\activate</span>
+
+<span class="comment"># 3. Install dependencies & run</span>
+<span class="command">pip install</span> -r requirements.txt
+<span class="command">python</span> main.py</code>
+                </div>
+            </div>
         </section>
 
-        <section>
-            <h2>Installation (for Users)</h2>
-            <p>Follow these steps to run the PyPlay application:</p>
-            <ol>
-                <li><strong>Install VLC:</strong> Before using PyPlay, you must have the official VLC Media Player installed on your system. Download and install VLC for your operating system (e.g., the 64-bit version for 64-bit Windows) from the <a href="https://www.videolan.org/vlc/" target="_blank">official VLC website</a>.</li>
-                <li><strong>Download PyPlay:</strong> Go to the <a href="https://github.com/AmiNilay/PyPlay/releases" target="_blank">Releases Page</a> and download the latest .zip file (e.g., PyPlay-v1.0-Windows.zip).</li>
-                <li><strong>Unzip and Run:</strong> Unzip the downloaded file to a permanent location on your computer. Open the new PyPlay folder and double-click on <code>PyPlay.exe</code> to start the application.</li>
-            </ol>
-        </section>
-
-        <section>
-            <h2>For Developers (Running from Source)</h2>
-            <p>If you want to run or contribute to the project from the source code:</p>
-            <ol>
-                <li><strong>Prerequisites:</strong> Ensure you have Python 3.x and the official VLC Media Player installed.</li>
-                <li><strong>Clone the repository:</strong>
-                    <pre><code>git clone https://github.com/AmiNilay/PyPlay.git
-cd PyPlay</code></pre>
-                </li>
-                <li><strong>Set up a virtual environment (recommended):</strong>
-                    <pre><code>python -m venv venv
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-# source venv/bin/activate</code></pre>
-                </li>
-                <li><strong>Install dependencies:</strong>
-                    <pre><code>pip install -r requirements.txt</code></pre>
-                </li>
-                <li><strong>Run the application:</strong>
-                    <pre><code>python main.py</code></pre>
-                </li>
-            </ol>
-        </section>
     </div>
 
+    <!-- Supported Formats Strip -->
+    <div class="formats-strip reveal">
+        <span class="format-tag">MP4</span> •
+        <span class="format-tag">MKV</span> •
+        <span class="format-tag">AVI</span> •
+        <span class="format-tag">MOV</span> •
+        <span class="format-tag">MP3</span> •
+        <span class="format-tag">FLAC</span> •
+        <span class="format-tag">WAV</span> •
+        <span class="format-tag">SRT</span>
+    </div>
+
+    <!-- Footer -->
     <footer>
-        <p>Created by Nilay Naha</p>
-        <p>© 2025 PyPlay. All rights reserved.</p>
+        <p>© 2025 PyPlay. Created by Nilay Naha. All rights reserved.</p>
         <div class="social-links">
-            <a href="https://aminilay.github.io/nilay-naha-portfolio/" target="_blank">Portfolio</a> |
-            <a href="https://www.linkedin.com/in/nilay-naha/" target="_blank">LinkedIn</a> |
+            <a href="https://aminilay.github.io/nilay-naha-portfolio/" target="_blank">Portfolio</a>
+            <a href="https://www.linkedin.com/in/nilay-naha/" target="_blank">LinkedIn</a>
             <a href="mailto:niloynaha2003@gmail.com">Email</a>
         </div>
     </footer>
 
+    <!-- Scripts for Animations and Copy Functionality -->
     <script>
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // Sticky header shrink effect
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-
-        // Intersection Observer for section fade-in
-        const sections = document.querySelectorAll('section');
-        const observer = new IntersectionObserver((entries) => {
+        // Intersection Observer for smooth scroll reveal animations
+        const revealElements = document.querySelectorAll('.reveal' );
+        
+        const revealObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Only animate once
                 }
             });
-        }, { threshold: 0.1 });
-
-        sections.forEach(section => {
-            observer.observe(section);
+        }, {
+            root: null,
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
         });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Copy to clipboard function for the terminal block
+        function copyCode() {
+            const codeText = `# 1. Clone & enter directory
+git clone https://github.com/AmiNilay/PyPlay.git && cd PyPlay
+
+# 2. Activate virtual environment
+python -m venv venv && source venv/bin/activate  # Windows: venv\\Scripts\\activate
+
+# 3. Install dependencies & run
+pip install -r requirements.txt
+python main.py`;
+            
+            navigator.clipboard.writeText(codeText ).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.innerText;
+                btn.innerText = '✅ Copied!';
+                btn.style.color = 'var(--accent-primary)';
+                
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.color = 'var(--text-muted)';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
     </script>
 </body>
 </html>
