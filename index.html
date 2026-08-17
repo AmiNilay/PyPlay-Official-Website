@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b1220">
+  <meta name="theme-color" content="#0a0a0a">
   <meta name="description" content="PyPlay v2.0 is a clean desktop media player built with Python, PyQt5, and libVLC.">
   <title>PyPlay v2.0 — Media Player</title>
 
@@ -13,20 +13,19 @@
 
   <style>
     :root {
-      --bg: #08111f;
-      --bg-deep: #050b14;
-      --surface: rgba(16, 29, 48, 0.82);
-      --surface-solid: #101d30;
-      --surface-soft: #152640;
-      --line: rgba(157, 185, 218, 0.16);
-      --line-strong: rgba(157, 185, 218, 0.28);
-      --text: #f4f8ff;
-      --muted: #a6b7cd;
-      --muted-strong: #c9d6e6;
-      --accent: #5eead4;
-      --accent-strong: #2dd4bf;
-      --accent-blue: #75aaff;
-      --shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+      --bg: #0a0a0a;
+      --bg-deep: #000000;
+      --surface: rgba(24, 24, 24, 0.9);
+      --surface-solid: #161616;
+      --surface-soft: #202020;
+      --line: rgba(255, 255, 255, 0.12);
+      --line-strong: rgba(255, 255, 255, 0.26);
+      --text: #f5f5f5;
+      --muted: #9b9b9b;
+      --muted-strong: #d8d8d8;
+      --accent: #ffffff;
+      --accent-strong: #d6d6d6;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
       --radius-lg: 28px;
       --radius-md: 18px;
       --ease: cubic-bezier(0.2, 0.75, 0.25, 1);
@@ -41,10 +40,7 @@
       min-width: 320px;
       overflow-x: hidden;
       color: var(--text);
-      background:
-        radial-gradient(circle at 10% 4%, rgba(94, 234, 212, 0.12), transparent 28rem),
-        radial-gradient(circle at 88% 12%, rgba(117, 170, 255, 0.12), transparent 28rem),
-        var(--bg);
+      background: var(--bg);
       font-family: "Manrope", system-ui, sans-serif;
       line-height: 1.6;
     }
@@ -53,10 +49,8 @@
       position: fixed;
       inset: 0;
       z-index: -1;
-      background-image: linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
-      background-size: 64px 64px;
+      background-image: none;
       content: "";
-      mask-image: linear-gradient(to bottom, black, transparent 75%);
       pointer-events: none;
     }
 
@@ -101,11 +95,11 @@
       width: 38px;
       height: 38px;
       place-items: center;
-      border: 1px solid rgba(94, 234, 212, 0.34);
+      border: 1px solid rgba(255, 255, 255, 0.32);
       border-radius: 13px;
-      color: var(--accent);
-      background: linear-gradient(145deg, rgba(94, 234, 212, 0.18), rgba(117, 170, 255, 0.12));
-      box-shadow: 0 0 26px rgba(94, 234, 212, 0.12);
+      color: #ffffff;
+      background: #151515;
+      box-shadow: 0 0 24px rgba(255, 255, 255, 0.06);
       font-size: 1.1rem;
     }
 
@@ -132,7 +126,7 @@
       transition: color 180ms ease;
     }
 
-    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover { color: #ffffff; }
 
     .nav-toggle {
       display: none;
@@ -156,10 +150,10 @@
       align-items: center;
       gap: 8px;
       margin-bottom: 22px;
-      border: 1px solid rgba(94, 234, 212, 0.24);
+      border: 1px solid rgba(255, 255, 255, 0.24);
       border-radius: 999px;
-      color: var(--accent);
-      background: rgba(94, 234, 212, 0.07);
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.06);
       padding: 7px 12px;
       font-family: "DM Mono", monospace;
       font-size: 0.73rem;
@@ -171,8 +165,8 @@
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 14px var(--accent);
+      background: #ffffff;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.34);
       content: "";
     }
 
@@ -188,12 +182,10 @@
       line-height: 0.98;
     }
 
-    .gradient-text {
-      color: var(--accent);
-      background: linear-gradient(105deg, var(--accent), var(--accent-blue));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .accent-text {
+      color: #ffffff;
+      background: none;
+      -webkit-text-fill-color: initial;
     }
 
     .hero-copy {
@@ -229,12 +221,12 @@
     .button:hover { transform: translateY(-3px); }
 
     .button-primary {
-      color: #06201c;
-      background: var(--accent);
-      box-shadow: 0 12px 32px rgba(45, 212, 191, 0.17);
+      color: #080808;
+      background: #ffffff;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
     }
 
-    .button-primary:hover { background: #8af2e2; }
+    .button-primary:hover { background: #d8d8d8; }
 
     .button-secondary {
       border-color: var(--line-strong);
@@ -243,8 +235,8 @@
     }
 
     .button-secondary:hover {
-      border-color: rgba(94, 234, 212, 0.48);
-      background: rgba(94, 234, 212, 0.08);
+      border-color: rgba(255, 255, 255, 0.52);
+      background: rgba(255, 255, 255, 0.08);
     }
 
     .meta-row {
@@ -271,14 +263,14 @@
       padding: 8px;
       border: 1px solid var(--line-strong);
       border-radius: 22px;
-      background: linear-gradient(145deg, rgba(94, 234, 212, 0.11), rgba(117, 170, 255, 0.06));
+      background: #151515;
       box-shadow: var(--shadow);
       transform: perspective(1200px) rotateX(2deg);
       transition: transform 420ms var(--ease), box-shadow 420ms ease;
     }
 
     .hero-preview:hover {
-      box-shadow: 0 34px 100px rgba(0, 0, 0, 0.4), 0 0 70px rgba(94, 234, 212, 0.08);
+      box-shadow: 0 34px 100px rgba(0, 0, 0, 0.48), 0 0 50px rgba(255, 255, 255, 0.04);
       transform: perspective(1200px) rotateX(0deg) translateY(-7px);
     }
 
@@ -291,13 +283,13 @@
       border: 1px solid var(--line);
       border-bottom: 0;
       border-radius: 14px 14px 0 0;
-      background: #0c1728;
+      background: #111111;
     }
 
     .window-dot { width: 9px; height: 9px; border-radius: 50%; }
-    .window-dot.red { background: #ff6b6b; }
-    .window-dot.amber { background: #ffd166; }
-    .window-dot.green { background: #71e0a3; }
+    .window-dot.red { background: #ffffff; opacity: 0.9; }
+    .window-dot.amber { background: #ffffff; opacity: 0.58; }
+    .window-dot.green { background: #ffffff; opacity: 0.3; }
 
     .preview-frame {
       overflow: hidden;
@@ -344,7 +336,7 @@
       overflow: hidden;
       border: 1px solid var(--line-strong);
       border-radius: var(--radius-lg);
-      background: rgba(10, 20, 35, 0.72);
+      background: rgba(16, 16, 16, 0.9);
       box-shadow: var(--shadow);
     }
 
@@ -354,14 +346,14 @@
       overflow: hidden;
       aspect-ratio: 16 / 9;
       isolation: isolate;
-      background: #04080e url("assets/UI.png") center / cover no-repeat;
+      background: #050505 url("assets/UI.png") center / cover no-repeat;
     }
 
     .comparison-stage::before {
       position: absolute;
       inset: 0;
       z-index: 1;
-      background: linear-gradient(90deg, rgba(4, 8, 14, 0.05), transparent 45%, rgba(4, 8, 14, 0.08));
+      background: rgba(0, 0, 0, 0.08);
       content: "";
       pointer-events: none;
     }
@@ -373,7 +365,7 @@
       overflow: hidden;
       width: var(--split);
       border-right: 2px solid rgba(255, 255, 255, 0.95);
-      background: #04080e;
+      background: #050505;
       box-shadow: 8px 0 24px rgba(0, 0, 0, 0.2);
     }
 
@@ -416,8 +408,8 @@
       place-items: center;
       border: 2px solid #fff;
       border-radius: 50%;
-      color: #07121f;
-      background: var(--accent);
+      color: #080808;
+      background: #ffffff;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
       transform: translate(-50%, -50%);
       pointer-events: none;
@@ -447,13 +439,13 @@
 
     .comparison-controls input {
       flex: 1;
-      accent-color: var(--accent);
+      accent-color: #ffffff;
       cursor: ew-resize;
     }
 
     .comparison-controls output {
       min-width: 43px;
-      color: var(--accent);
+      color: #ffffff;
       font-family: "DM Mono", monospace;
       text-align: right;
     }
@@ -479,7 +471,7 @@
     .comparison-point strong {
       display: block;
       margin-bottom: 5px;
-      color: var(--accent);
+      color: #ffffff;
       font-size: 0.9rem;
     }
 
@@ -501,7 +493,7 @@
     }
 
     .feature-card:hover {
-      border-color: rgba(94, 234, 212, 0.42);
+      border-color: rgba(255, 255, 255, 0.42);
       background: var(--surface-soft);
       transform: translateY(-5px);
     }
@@ -514,8 +506,8 @@
       place-items: center;
       border: 1px solid rgba(94, 234, 212, 0.2);
       border-radius: 13px;
-      color: var(--accent);
-      background: rgba(94, 234, 212, 0.08);
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
       font-size: 1.15rem;
     }
 
@@ -558,7 +550,7 @@
       overflow: hidden;
       border: 1px solid var(--line-strong);
       border-radius: var(--radius-md);
-      background: #060d17;
+      background: #0b0b0b;
       box-shadow: var(--shadow);
     }
 
@@ -591,12 +583,12 @@
       overflow-x: auto;
       margin: 0;
       padding: 19px;
-      color: #d9e7f7;
+      color: #dedede;
       font: 0.79rem/1.75 "DM Mono", monospace;
     }
 
     .code-accent { color: var(--accent); }
-    .code-comment { color: #6f8096; }
+    .code-comment { color: #777777; }
 
     .formats {
       display: flex;
@@ -713,7 +705,7 @@
   <main id="top">
     <section class="hero shell">
       <div class="eyebrow">PyPlay v2.0 · Windows x64</div>
-      <h1>Playback, <span class="gradient-text">refined.</span></h1>
+      <h1>Playback, <span class="accent-text">refined.</span></h1>
       <p class="hero-copy">A focused desktop media player with a cleaner interface, precision seeking, playlists, resume playback, and the power of libVLC.</p>
 
       <div class="hero-actions">
@@ -741,7 +733,7 @@
     <section id="comparison" class="section shell">
       <div class="section-heading">
         <div class="eyebrow">Designed for the way you watch</div>
-        <h2>From functional to <span class="gradient-text">focused</span></h2>
+        <h2>From functional to <span class="accent-text">focused</span></h2>
         <p>Drag the slider across the image to compare the previous PyPlay interface with the redesigned v2.0 experience.</p>
       </div>
 
@@ -775,7 +767,7 @@
     <section id="features" class="section shell">
       <div class="section-heading">
         <div class="eyebrow">Everything in one player</div>
-        <h2>Built for <span class="gradient-text">everyday playback</span></h2>
+        <h2>Built for <span class="accent-text">everyday playback</span></h2>
         <p>PyPlay keeps the surface simple while providing the controls and persistence features that make a desktop player useful.</p>
       </div>
 
@@ -795,7 +787,7 @@
     <section id="install" class="section shell">
       <div class="section-heading">
         <div class="eyebrow">Ready in minutes</div>
-        <h2>Download or <span class="gradient-text">run from source</span></h2>
+        <h2>Download or <span class="accent-text">run from source</span></h2>
         <p>Download the Windows package for the quickest start, or clone the repository to build and extend PyPlay yourself.</p>
       </div>
 
