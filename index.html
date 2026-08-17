@@ -233,34 +233,18 @@
         .dot-g { background: #27c93f; }
 
         .mockup-body {
-            aspect-ratio: 16/9;
             background: #000;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-        }
-
-        .mockup-play {
-            font-size: 4rem;
-            color: rgba(255,255,255,0.2);
-            transition: var(--transition-smooth);
-        }
-        .mockup-container:hover .mockup-play {
-            color: var(--accent-primary);
-            transform: scale(1.1);
-        }
-
-        .mockup-controls {
-            position: absolute;
-            bottom: 0;
             width: 100%;
-            padding: 1rem;
-            background: linear-gradient(transparent, rgba(0,0,0,0.9));
-            display: flex;
-            justify-content: space-between;
-            color: var(--text-muted);
-            font-size: 1.2rem;
+        }
+
+        .mockup-body img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
 
         /* --- Main Content Container --- */
@@ -432,7 +416,7 @@
             <a href="#features">Features</a>
             <a href="#install">Installation</a>
             <a href="https://github.com/AmiNilay/PyPlay" target="_blank">GitHub ⭐</a>
-            <a href="https://aminilay.github.io/nilay-naha-portfolio/" target="_blank">← Portfolio</a>
+            <a href="https://nilay-naha-portfolio.vercel.app/" target="_blank">← Portfolio</a>
         </div>
     </nav>
 
@@ -456,7 +440,7 @@
             <span class="badge">🛡️ 100% Free & Open Source</span>
         </div>
 
-        <!-- App Mockup -->
+        <!-- App Mockup using UI.png -->
         <div class="mockup-container reveal">
             <div class="mockup-header">
                 <div class="mockup-dot dot-r"></div>
@@ -464,12 +448,8 @@
                 <div class="mockup-dot dot-g"></div>
             </div>
             <div class="mockup-body">
-                <div class="mockup-play">▶</div>
-                <div class="mockup-controls">
-                    <span>▶ ⏸ ⏹</span>
-                    <span>01:24 / 04:50</span>
-                    <span>🔊 80% &nbsp; 💬 &nbsp; 📸 &nbsp; ⛶</span>
-                </div>
+                <!-- Loads the UI.png file from the same directory -->
+                <img src="UI.png" alt="PyPlay Media Player Interface">
             </div>
         </div>
     </header>
@@ -566,7 +546,7 @@
     <footer>
         <p>© 2025 PyPlay. Created by Nilay Naha. All rights reserved.</p>
         <div class="social-links">
-            <a href="https://aminilay.github.io/nilay-naha-portfolio/" target="_blank">Portfolio</a>
+            <a href="https://nilay-naha-portfolio.vercel.app/" target="_blank">Portfolio</a>
             <a href="https://www.linkedin.com/in/nilay-naha/" target="_blank">LinkedIn</a>
             <a href="mailto:niloynaha2003@gmail.com">Email</a>
         </div>
